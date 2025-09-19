@@ -29,7 +29,7 @@ public class User implements UserDetails {
     private String password;
     private String avatar;
     private String description;
-    private Boolean enable;
+    private Boolean enabled;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;

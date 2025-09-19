@@ -1,0 +1,163 @@
+databaseChangeLog:
+  - changeSet:
+      id: Create all tables related to user
+      author: Kaseiinov_I
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: first_name
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(45)
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avatar
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: authorities
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: authority
+                  type: varchar(55)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: role_name
+                  type: varchar(55)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: roles_authorities
+            columns:
+              - column:
+                  name: role_id
+                  type: bigint
+              - column:
+                  name: authority_id
+                  type: bigint
+
+        - addForeignKeyConstraint:
+            baseTableName: roles_authorities
+            baseColumnNames: role_id
+            constraintName: fk_roles_authorities_role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade
+
+        - addForeignKeyConstraint:
+            baseTableName: roles_authorities
+            baseColumnNames: authority_id
+            constraintName: fk_roles_authorities_authority_id
+            referencedTableName: authorities
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade
+
+        - createTable:
+            tableName: usr_roles
+            columns:
+              - column:
+                  name: role_id
+                  type: bigint
+              - column:
+                  name: user_id
+                  type: bigint
+
+        - addForeignKeyConstraint:
+            baseTableName: usr_roles
+            baseColumnNames: role_id
+            constraintName: fk_usr_roles_role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade
+
+        - addForeignKeyConstraint:
+            baseTableName: usr_roles
+            baseColumnNames: user_id
+            constraintName: fk_usr_roles_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade
+
+        - createTable:
+            tableName: users_subscribers
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: subscriber_id
+                  type: bigint
+
+        - addForeignKeyConstraint:
+            baseTableName: users_subscribers
+            baseColumnNames: user_id
+            constraintName: fk_users_subscribers_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade
+
+        - addForeignKeyConstraint:
+            baseTableName: users_subscribers
+            baseColumnNames: subscriber_id
+            constraintName: fk_users_subscribers_subscriber_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: cascade

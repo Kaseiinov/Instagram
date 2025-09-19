@@ -34,7 +34,7 @@
                         <div class="card-body p-5">
                             <h2 class="text-uppercase text-center mb-5">Create an account</h2>
 
-                            <form action="/auth/register" method="post" class="mt-4">
+                            <form action="/auth/register" method="post" class="mt-4" enctype="multipart/form-data">
 
                                 <#if _csrf??>
                                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
@@ -43,19 +43,13 @@
 
                             <div data-mdb-input-init class="form-outline mb-4">
                                 <label class="form-label" for="form3Example1cg">Your first name</label>
-                                <@spring.formInput "userDto.name" 'id="form3Example1cg" class="form-control form-control-lg"' />
+                                <@spring.formInput "userDto.firstName" 'id="form3Example1cg" class="form-control form-control-lg"' />
                                 <@spring.showErrors "<br>" "error text-danger" />
                             </div>
 
                             <div data-mdb-input-init class="form-outline mb-4">
                                 <label class="form-label" for="form3Example2cg">Your last name</label>
-                                <@spring.formInput "userDto.surname" 'id="form3Example2cg" class="form-control form-control-lg"' />
-                                <@spring.showErrors "<br>" "error text-danger" />
-                            </div>
-
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <label class="form-label" for="form3Example0cg">Your phone number</label>
-                                <@spring.formInput "userDto.phoneNumber" 'id="form3Example0cg" class="form-control form-control-lg"' />
+                                <@spring.formInput "userDto.lastName" 'id="form3Example2cg" class="form-control form-control-lg"' />
                                 <@spring.showErrors "<br>" "error text-danger" />
                             </div>
 
@@ -71,12 +65,18 @@
                                 <@spring.showErrors "<br>" "error text-danger" />
                             </div>
 
-                            <div>
-                                <@spring.formRadioButtons "userDto.accountType",
-                                {"applicant":"Applicant", "employer":"Employer"},
-                                "",
-                                'class="form-check-input" inline="true"' />
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <label class="form-label" for="form3Example2cg">Description</label>
+                                <@spring.formInput "userDto.description" 'id="form3Example2cg" class="form-control form-control-lg"' />
                                 <@spring.showErrors "<br>" "error text-danger" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="formFileMultiple" class="form-label">Avatar</label>
+                                <input name="avatar" class="form-control" type="file" id="formFileMultiple">
+                                <#if springMacroRequestContext.getMessage("avatar", "")?has_content>
+                                    <span style="color: red;">${springMacroRequestContext.getMessage("avatar", "")}</span>
+                                </#if>
                             </div>
 
                             <div class="d-flex justify-content-center">

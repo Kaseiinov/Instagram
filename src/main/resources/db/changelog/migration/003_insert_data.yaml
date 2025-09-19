@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert_user_data
+      author: Kaseiinov_I
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO users (first_name, last_name, email, password, avatar, description, enabled) VALUES
+              ('John', 'Doe', 'john.doe@example.com', '$2a$10$examplehashedpassword1', 'avatar1.jpg', 'It is description', true),
+              ('Jane', 'Smith', 'jane.smith@example.com', '$2a$10$examplehashedpassword2', 'avatar2.jpg', 'It is description', true),
+              ('Bob', 'Johnson', 'bob.johnson@example.com', '$2a$10$examplehashedpassword3', 'avatar3.jpg', 'It is description', true);
+
+        - sql:
+            sql: >
+              INSERT INTO authorities (authority) VALUES
+              ('READ'),
+              ('WRITE'),
+              ('DELETE');
+
+        - sql:
+            sql: >
+              INSERT INTO roles (role_name) VALUES
+              ('ROLE_USER'),
+              ('ROLE_ADMIN');
+
+        - sql:
+            sql: >
+              INSERT INTO roles_authorities (role_id, authority_id) VALUES
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_USER'), (SELECT id FROM authorities WHERE authority = 'READ')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_USER'), (SELECT id FROM authorities WHERE authority = 'WRITE')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_ADMIN'), (SELECT id FROM authorities WHERE authority = 'READ')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_ADMIN'), (SELECT id FROM authorities WHERE authority = 'WRITE')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_ADMIN'), (SELECT id FROM authorities WHERE authority = 'DELETE'));
+
+        - sql:
+            sql: >
+              INSERT INTO usr_roles (role_id, user_id) VALUES
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_USER'), (SELECT id FROM users WHERE email = 'john.doe@example.com')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_USER'), (SELECT id FROM users WHERE email = 'jane.smith@example.com')),
+              ((SELECT id FROM roles WHERE role_name = 'ROLE_ADMIN'), (SELECT id FROM users WHERE email = 'bob.johnson@example.com'));
+
+        - sql:
+            sql: >
+              INSERT INTO users_subscribers (user_id, subscriber_id) VALUES
+              ((SELECT id FROM users WHERE email = 'jane.smith@example.com'), (SELECT id FROM users WHERE email = 'john.doe@example.com')),
+              ((SELECT id FROM users WHERE email = 'bob.johnson@example.com'), (SELECT id FROM users WHERE email = 'john.doe@example.com'));
+
+  - changeSet:
+      id: insert_post_data
+      author: Kaseiinov_I
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO posts (picture, description, user_id) VALUES
+              ('beach_sunset.jpg', 'Beautiful sunset at the beach!', (SELECT id FROM users WHERE email = 'john.doe@example.com')),
+              ('mountain_hike.png', 'Amazing hike in the mountains today!', (SELECT id FROM users WHERE email = 'jane.smith@example.com')),
+              ('city_lights.jpeg', 'City lights never looked better!', (SELECT id FROM users WHERE email = 'bob.johnson@example.com'));
+
+        - sql:
+            sql: >
+              INSERT INTO comments (comment, post_id, user_id) VALUES
+              ('Wow, this looks amazing!', (SELECT id FROM posts WHERE picture = 'beach_sunset.jpg'), (SELECT id FROM users WHERE email = 'jane.smith@example.com')),
+              ('I need to visit this place!', (SELECT id FROM posts WHERE picture = 'beach_sunset.jpg'), (SELECT id FROM users WHERE email = 'bob.johnson@example.com')),
+              ('Great shot!', (SELECT id FROM posts WHERE picture = 'mountain_hike.png'), (SELECT id FROM users WHERE email = 'john.doe@example.com')),
+              ('What camera did you use?', (SELECT id FROM posts WHERE picture = 'city_lights.jpeg'), (SELECT id FROM users WHERE email = 'jane.smith@example.com'));
+
+        - sql:
+            sql: >
+              INSERT INTO likes (post_id, user_id) VALUES
+              ((SELECT id FROM posts WHERE picture = 'beach_sunset.jpg'), (SELECT id FROM users WHERE email = 'jane.smith@example.com')),
+              ((SELECT id FROM posts WHERE picture = 'beach_sunset.jpg'), (SELECT id FROM users WHERE email = 'bob.johnson@example.com')),
+              ((SELECT id FROM posts WHERE picture = 'mountain_hike.png'), (SELECT id FROM users WHERE email = 'john.doe@example.com')),
+              ((SELECT id FROM posts WHERE picture = 'city_lights.jpeg'), (SELECT id FROM users WHERE email = 'jane.smith@example.com'));

@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_tables
+      author: Kaseiinov_I
+      changes:
+        - createTable:
+            tableName: posts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: picture
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar(255)
+              - column:
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+        - createTable:
+            tableName: likes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_post_user
+
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: fk_comment_post
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_comment_user
+
+        - addForeignKeyConstraint:
+            baseTableName: likes
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: fk_like_post
+        - addForeignKeyConstraint:
+            baseTableName: likes
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_like_user
